@@ -1,20 +1,27 @@
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
 import { Button } from "./Button";
 
+interface GenreResponseProps {
+  id: number;
+  name: "action" | "comedy" | "documentary" | "drama" | "horror" | "family";
+  title: string;
+}
+
 interface SidebarProps {
-  genres: {
-    id: number;
-    name: "action" | "comedy" | "documentary" | "drama" | "horror" | "family";
-    title: string;
-  }[];
   selectedGenreId: number;
   handleClickButton: (id: number) => void;
 }
 
-export function SideBar({
-  genres,
-  selectedGenreId,
-  handleClickButton,
-}: SidebarProps) {
+export function SideBar({ selectedGenreId, handleClickButton }: SidebarProps) {
+  const [genres, setGenres] = useState<GenreResponseProps[]>([]);
+
+  useEffect(() => {
+    api.get<GenreResponseProps[]>("genres").then((response) => {
+      setGenres(response.data);
+    });
+  }, []);
+
   return (
     <nav className="sidebar">
       <span>
